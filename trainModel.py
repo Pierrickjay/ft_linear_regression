@@ -36,25 +36,6 @@ def normalise_value(data):
 def estimatePrice(t0, t1, mileage):
     return t0 + (t1 * mileage)
 
-
-def plot_value(mileage, price, theta0, theta1):
-    x = numpy.linspace(min(mileage), max(mileage), 2)
-    plt.plot(mileage, price, 'o', label="Dataset")
-    plt.plot(x, theta1 * x + theta0, 'r', label="Linear Regression")
-    plt.xlabel('Mileage (km)')
-    plt.ylabel('Price')
-    plt.title('Scatter Plot of Mileage vs. Price')
-    plt.legend()
-
-
-def calc_the_mse(t0, t1, mileage, price_value):
-    mse = 0
-    for i in range(1, len(mileage)):
-        mse += (price_value - estimatePrice(mileage[i], t0, t1)) ** 2
-    mse = mse / len(mileage)
-    return mse
-
-
 def find_theta(km_list, price_value):
     """
     Function to find theta0 and t1, thanks to the model trainer
@@ -102,7 +83,6 @@ def main():
         print("theta 0 found = ", t0," \ntheta 1 found =", t1)
         denormalise_value(km_list, std, meanVal) # denornalize km_list
         create_file(t0, t1)
-        plot_value(km_list, price_value, t0, t1)
         plt.show()
     except:
         print("Couldn't open file")

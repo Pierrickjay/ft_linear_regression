@@ -33,8 +33,6 @@ def main():
         rmse = sqrt(mse)
         r2 = calc_the_r2(params.loc[:,"Theta0"].values[0], params.loc[:,"Theta1"].values[0], df_true.loc[:, "km"].values, df_true.loc[:, "price"].values)
         print(f"Average squared error = {mse} \nRoot Average squared error = {rmse}\n Coefficient of determination = {r2}")
-
-
     except Exception as e:
         print(f'Error: {e}')
 
