@@ -12,7 +12,6 @@ def calc_the_mse(t0, t1, mileage, price_value):
 
 def calc_the_r2(t0, t1, mileage, price_value):
     mean = sum(price_value) / len(price_value - 1)
-    print(mean)
     sst = 0 #sum of squares total
     ssr = 0 #sum of squares due to regression
     for i in range(0, len(mileage)):
@@ -32,7 +31,7 @@ def main():
         #average error
         rmse = sqrt(mse)
         r2 = calc_the_r2(params.loc[:,"Theta0"].values[0], params.loc[:,"Theta1"].values[0], df_true.loc[:, "km"].values, df_true.loc[:, "price"].values)
-        print(f"Average squared error = {mse} \nRoot Average squared error = {rmse}\n Coefficient of determination = {r2}")
+        print(f"Average squared error = {mse} \nRoot Average squared error = {rmse}\nCoefficient of determination = {r2}")
     except Exception as e:
         print(f'Error: {e}')
 

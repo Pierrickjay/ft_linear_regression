@@ -2,8 +2,7 @@ import sys
 import csv
 import matplotlib.pyplot as plt
 import pandas as pd
-import numpy
-import statistics
+import math
 
 def parseCsv(file_obj):
     km_list = []
@@ -26,9 +25,8 @@ def denormalise_value(data, std_dev, mean):
 
 
 def normalise_value(data):
-    meanVal = statistics.mean(data)
-    std_dev = numpy.std(data)
-    #Formula to normalize value for a linear regression
+    meanVal = sum(data) / (len(data) - 1)
+    std_dev = math.sqrt(sum([(x - meanVal) ** 2 for x in data]) / (len(data) - 1))
     change_value(data, std_dev, meanVal)
     return (meanVal, std_dev)
 
@@ -37,27 +35,19 @@ def estimatePrice(t0, t1, mileage):
     return t0 + (t1 * mileage)
 
 def find_theta(km_list, price_value):
-    """
-    Function to find theta0 and t1, thanks to the model trainer
-    called gradient descend
-    """
-    learningRate = 0.1 #also called alpha a number between 0 and 1
+    learningRate = 0.1 #also called alpha number between 0 and 1
     totalT0 = 0
     totalT1 = 0
     tmpT0 = 0
     tmpT1 = 0
-    listOfTmpT0 = []
-    listOfTmpT1 = []
-    for _ in range(100): #500 was too high, 100 was the the one doing less iteration and being the closestt to the final result
+    for _ in range(100): #500 was too high, 100 was the the one doing less iteration and being the closest to find the convergence value
         totalT0 = 0
         totalT1 = 0
         for i in range(len(km_list) - 1):
             totalT0 += estimatePrice(tmpT0, tmpT1, km_list[i]) - price_value[i]
             totalT1 += (estimatePrice(tmpT0, tmpT1, km_list[i]) - price_value[i]) * km_list[i]
-        tmpT0 -= totalT0 * (1 / len(km_list)) * learningRate
-        tmpT1 -= totalT1 * (1 / len(km_list)) * learningRate
-        listOfTmpT0.append(tmpT0)
-        listOfTmpT1.append(tmpT1)
+        tmpT0 -= learningRate * totalT0 * (1 / len(km_list))
+        tmpT1 -= learningRate * totalT1 * (1 / len(km_list))
     return tmpT0, tmpT1
 
 
@@ -75,8 +65,8 @@ def main():
         f = open(sys.argv[1])
         km_list = []
         price_value = []
-        km_list, price_value= parseCsv(f)
-        meanVal, std= normalise_value(km_list)
+        km_list, price_value = parseCsv(f)
+        meanVal, std = normalise_value(km_list)
         t0, t1 = find_theta(km_list, price_value)
         t0 = t0 - (t1 * meanVal / std) #denornalize thetas
         t1 = t1 / std
@@ -85,7 +75,7 @@ def main():
         create_file(t0, t1)
         plt.show()
     except:
-        print("Couldn't open file")
+        print("Couldn't open file or issue while reading file")
 
 if (__name__ == "__main__"):
     main()
